@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+    working_dir: /app
+    volumes:
+      - ./library-api:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    command: ["sh", "-c", "./wait-for.sh db:3306 -- npm start"]
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: Qredafd4!
+      MYSQL_DATABASE: library
+    ports:
+      - "3307:3306"  # это для доступа из Windows/хоста на 3307
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+volumes:
+  mysql_data:
+
+
+
+
+
+
+
+
+
+
